@@ -4,10 +4,10 @@ Configuring movement affect and agency through real-time, computer vision visual
 
 ## Thanks to:
 
-- [https://flong.com/](Golan Levin)
-- [https://jensimmons.com/](Jen Simmons)
-- [https://lauren-mccarthy.com/](Lauren McCarthy)
-- [https://twitter.com/pesska](Jessica Bland)
+- Golan Levin: <https://flong.com>
+- Jen Simmons: <https://jensimmons.com>
+- Lauren McCarthy: <https://lauren-mccarthy.com>
+- Jessica Bland: <https://twitter.com/pesska>
 
 ## Credits:
 
