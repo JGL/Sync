@@ -26,12 +26,13 @@ function windowResized() {
 }
 
 function setup() {
-  cameraWidth = 640;
-  cameraHeight = 480;
   canvas = createCanvas(windowWidth, windowHeight);
   //https://github.com/processing/p5.js/wiki/Beyond-the-canvas
-  canvas.parent("p5jsSketch");
+  // canvas.parent("p5jsSketch");
   //createCanvas(640, 480);
+
+  cameraWidth = 640;
+  cameraHeight = 480;
   video = createCapture(VIDEO);
   video.size(cameraWidth, cameraHeight);
 
@@ -60,8 +61,8 @@ function draw() {
   image(video, 0, 0, windowWidth, windowHeight);
 
   // We can call both functions to draw all keypoints and the skeletons
-  // drawKeypoints();
-  // drawSkeleton();
+  drawKeypoints();
+  drawSkeleton();
 
   //https://github.com/CodingTrain/website/blob/master/Q_and_A/Q_6_p5_background/sketch.js
   if (mouseIsPressed) {

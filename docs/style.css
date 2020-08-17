@@ -1,5 +1,10 @@
 /* fullscreen fun via https://dev.to/lennythedev/css-gotcha-how-to-fill-page-with-a-div-270j*/
 
+/* include border and padding in element width and height */
+* {
+    box-sizing: border-box;
+}
+
 /* override browser default */
 html,
 body {
@@ -37,18 +42,10 @@ body {
     /* via https://css-tricks.com/three-css-alternatives-to-javascript-navigation/ */
 }
 
-/* include border and padding in element width and height */
-* {
-    box-sizing: border-box;
-}
-
 /* full-sized  container that fills up the page */
-#p5jsSketch {
+.p5jsCanvas {
     height: 100%;
     width: 100%;
-    position: absolute;
-    left: 0px;
-    top: 0px;
-    z-index: -1;
+    /* z-index: -1; */
     /* via https://github.com/CodingTrain/website/blob/master/Q_and_A/Q_6_p5_background/sketch.js and https://www.youtube.com/watch?v=OIfEHD3KqCg */
 }
