@@ -8,13 +8,13 @@ Configuring movement affect and agency through real-time, computer vision visual
 - Jen Simmons: <https://jensimmons.com>
 - Lauren McCarthy: <https://lauren-mccarthy.com>
 - Jessica Bland: <https://twitter.com/pesska>
-- Mark Lundin: <https://www.mark-lundin.com/>
-- Ross Cairns: <https://rosscairns.com/>
-- Matt DesLauriers: <https://www.mattdesl.com/>
-- Igor Clark: <https://www.igorclark.net/>
-- Rune Madsen: <https://www.runemadsen.com/> 
-- Marcin Ignac: <http://marcinignac.com/>
-- Neil Carpenter: <https://neilcarpenter.com/>
+- Mark Lundin: <https://www.mark-lundin.com>
+- Ross Cairns: <https://rosscairns.com>
+- Matt DesLauriers: <https://www.mattdesl.com>
+- Igor Clark: <https://www.igorclark.net>
+- Rune Madsen: <https://www.runemadsen.com> 
+- Marcin Ignac: <http://marcinignac.com>
+- Neil Carpenter: <https://neilcarpenter.com>
 
 ## Other software used:
 
