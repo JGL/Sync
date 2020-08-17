@@ -67,8 +67,8 @@ function draw() {
   if (mouseIsPressed) {
     line(pmouseX, pmouseY, mouseX, mouseY);
   }
-  var vol = mic.getLevel();
-  ellipse(windowWidth / 2, windowHeight / 2, vol * windowWidth);
+  // var vol = mic.getLevel();
+  // ellipse(windowWidth / 2, windowHeight / 2, vol * windowWidth);
 }
 
 // A function to draw ellipses over the detected keypoints

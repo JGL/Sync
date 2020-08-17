@@ -46,9 +46,9 @@ body {
 #p5jsSketch {
     height: 100%;
     width: 100%;
-    z-index: -1;
     position: absolute;
     left: 0px;
     top: 0px;
+    z-index: -1;
     /* via https://github.com/CodingTrain/website/blob/master/Q_and_A/Q_6_p5_background/sketch.js and https://www.youtube.com/watch?v=OIfEHD3KqCg */
 }
