@@ -1,17 +1,17 @@
-// Copyright (c) 2019 ml5
-//
-// This software is released under the MIT License.
-// https://opensource.org/licenses/MIT
+//duplicated by JGL from https://editor.p5js.org/ml5/sketches/PoseNet_webcam
+//also using https://github.com/CodingTrain/website/blob/master/Q_and_A/Q_6_p5_background/sketch.js
+//via; https://www.youtube.com/watch?v=OIfEHD3KqCg
+//and https://github.com/processing/p5.js/wiki/Beyond-the-canvas
 
 /* ===
 ml5 Example
 PoseNet example using p5.js
 === */
 
-//duplicated by JGL from https://editor.p5js.org/ml5/sketches/PoseNet_webcam
-//also using https://github.com/CodingTrain/website/blob/master/Q_and_A/Q_6_p5_background/sketch.js
-//via; https://www.youtube.com/watch?v=OIfEHD3KqCg
-//and https://github.com/processing/p5.js/wiki/Beyond-the-canvas
+// Copyright (c) 2019 ml5
+//
+// This software is released under the MIT License.
+// https://opensource.org/licenses/MIT
 
 let video;
 let poseNet;
@@ -49,7 +49,6 @@ function setup() {
   //https://github.com/CodingTrain/website/blob/master/Q_and_A/Q_6_p5_background/sketch.js
   // mic = new p5.AudioIn();
   // mic.start();
-  background(255, 0, 0);
 }
 
 function modelReady() {
@@ -57,7 +56,8 @@ function modelReady() {
 }
 
 function draw() {
-  stroke(0);
+  background(0, 0, 0);
+  stroke(255);
   image(video, 0, 0, windowWidth, windowHeight);
 
   // We can call both functions to draw all keypoints and the skeletons
