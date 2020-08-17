@@ -114,6 +114,6 @@ function draw() {
   if (mouseIsPressed) {
     line(pmouseX, pmouseY, mouseX, mouseY);
   }
-  var vol = mic.getLevel();
-  ellipse(width / 2, height / 2, vol * width);
+  // var vol = mic.getLevel();
+  // ellipse(width / 2, height / 2, vol * width);
 }
