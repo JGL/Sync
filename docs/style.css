@@ -1,9 +1,19 @@
-* {
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
+/* fullscreen fun via https://dev.to/lennythedev/css-gotcha-how-to-fill-page-with-a-div-270j*/
+
+/* override browser default */
+html,
+body {
+    margin: 0;
+    padding: 0;
 }
 
-html {
+/* use viewport-relative units to cover page fully */
+body {
+    height: 100vh;
+    width: 100vw;
+    background: white;
+    background-color: white;
+    color: black;
     text-rendering: optimizeLegibility;
     -webkit-font-kerning: normal;
     font-kerning: normal;
@@ -11,28 +21,34 @@ html {
     -moz-text-size-adjust: 100%;
     -ms-text-size-adjust: 100%;
     text-size-adjust: 100%;
-}
-
-img {
-    width: 100%;
-}
-
-.element-invisible {
-    position: absolute !important;
-    height: 1px;
-    width: 1px;
-    overflow: hidden;
-    clip: rect(1px 1px 1px 1px);
-}
-
-body {
-    padding: 1rem;
-    margin: 1rem;
-    text-rendering: optimizelegibility;
-    background: #fff;
-    background-color: #fff;
-    color: #000;
-    font-family: Helvetica, sans-serif;
-    font-size: 11pt;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-size: 21px;
+    /* medium.com size! */
     font-style: normal;
+    font-family: -apple-system,
+        BlinkMacSystemFont,
+        Segoe UI,
+        Helvetica,
+        Arial,
+        sans-serif,
+        Apple Color Emoji,
+        Segoe UI Emoji;
+    /* via https://css-tricks.com/three-css-alternatives-to-javascript-navigation/ */
+}
+
+/* include border and padding in element width and height */
+* {
+    box-sizing: border-box;
+}
+
+/* full-sized  container that fills up the page */
+#p5jsSketch {
+    height: 100%;
+    width: 100%;
+    z-index: -1;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    /* via https://github.com/CodingTrain/website/blob/master/Q_and_A/Q_6_p5_background/sketch.js and https://www.youtube.com/watch?v=OIfEHD3KqCg */
 }
