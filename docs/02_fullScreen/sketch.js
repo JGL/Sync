@@ -27,6 +27,10 @@ function windowResized() {
 
 function setup() {
   canvas = createCanvas(windowWidth, windowHeight);
+  canvas.position(0, 0);
+  canvas.style('z-index', '-1');
+  canvas.style('width', '100%');
+  canvas.style('height', '100%');
   //https://github.com/processing/p5.js/wiki/Beyond-the-canvas
   // canvas.parent("p5jsSketch");
   //createCanvas(640, 480);
