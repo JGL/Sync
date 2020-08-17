@@ -41,11 +41,3 @@ body {
         Segoe UI Emoji;
     /* via https://css-tricks.com/three-css-alternatives-to-javascript-navigation/ */
 }
-
-/* full-sized  container that fills up the page */
-.p5jsCanvas {
-    height: 100%;
-    width: 100%;
-    /* z-index: -1; */
-    /* via https://github.com/CodingTrain/website/blob/master/Q_and_A/Q_6_p5_background/sketch.js and https://www.youtube.com/watch?v=OIfEHD3KqCg */
-}
