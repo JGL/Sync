@@ -33,13 +33,23 @@ var strokeColour;
 var showCamera;
 var fillColour;
 var drawStroke;
-var drawFill;
+var drawFilled;
+var shapeToDraw;
+var shapeRadius;
+var shapeRadiusMin;
+var shapeRadiusMax;
+var shapeRadiusStep;
+var strokeOpacity;
+var strokeOpacityMin;
+var strokeOpacityMax;
+var strokeOpacityStep;
+var fillOpacity;
+var fillOpacityMin;
+var fillOpacityMax;
+var fillOpacityStep;
 
 function setup() {
   textAlign(CENTER, CENTER); //https://p5js.org/reference/#/p5/textAlign
-  //setting up colour mode and fill mode
-  colorMode(HSB); //https://p5js.org/reference/#/p5/colorMode have to do it right at the start of setup, otherwise other created colours remember the colour mode they were created in
-  //colorMode(HSB, 360, 100, 100, 1) is default
 
   cameraWidth = 640;
   cameraHeight = 480;
@@ -76,16 +86,29 @@ function setup() {
   strokeWidthMin = 0;
   strokeWidthMax = 42;
   strokeWidthStep = 1;
-  backgroundColour = [0, 0, 100]; //https://rgb.to/white
-  strokeColour = [0, 0, 0]; //black in hsl, https://rgb.to/black
+  backgroundColour = [255, 255, 255]; // white
+  strokeColour = [0, 0, 0]; //black
   showCamera = true;
-  fillColour = [0, 100, 50]; //red in hsl, https://rgb.to/red
+  fillColour = [255, 0, 0]; //red
   drawStroke = true;
-  drawFill = true;
+  drawFilled = true;
+  shapeToDraw = ['circle', 'triangle', 'square', 'pentagon', 'star'];
+  shapeRadius = 10;
+  shapeRadiusMin = 0;
+  shapeRadiusMax = 42;
+  shapeRadiusStep = 1;
+  strokeOpacity = 255;
+  strokeOpacityMin = 0;
+  strokeOpacityMax = 255;
+  strokeOpacityStep = 1;
+  fillOpacity = 255;
+  fillOpacityMin = 0;
+  fillOpacityMax = 255;
+  fillOpacityStep = 1;
 
   // Create Layout GUI
   gui = createGui('Press g to hide or show me');
-  gui.addGlobals('backgroundColour', 'drawStroke', 'strokeColour', 'strokeWidth', 'drawFill', 'fillColour', 'showCamera');
+  gui.addGlobals('backgroundColour', 'drawStroke', 'strokeColour', 'strokeOpacity', 'strokeWidth', 'drawFilled', 'fillColour', 'fillOpacity', 'showCamera', 'shapeToDraw', 'shapeRadius');
 }
 
 function modelReady() {
@@ -99,15 +122,19 @@ function draw() {
   background(backgroundColour);
 
   // set fill style
-  if (drawFill) {
-    fill(fillColour);
+  if (drawFilled) {
+    //https://p5js.org/reference/#/p5/fill
+    let c = color(fillColour);
+    fill(red(c), green(c), blue(c), fillOpacity);
   } else {
     noFill();
   }
 
   // set stroke style
   if (drawStroke) {
-    stroke(strokeColour);
+    //https://p5js.org/reference/#/p5/stroke
+    let c = color(strokeColour);
+    stroke(red(c), green(c), blue(c), strokeOpacity);
     strokeWeight(strokeWidth);
   } else {
     noStroke();
@@ -133,7 +160,35 @@ function drawKeypointsScaled() {
       let keypoint = pose.keypoints[j];
       // Only draw an ellipse is the pose probability is bigger than 0.2
       if (keypoint.score > 0.2) {
-        ellipse(keypoint.position.x * horizontalRatio, keypoint.position.y * verticalRatio, 10, 10);
+        let d = shapeRadius;
+        let x = keypoint.position.x * horizontalRatio;
+        let y = keypoint.position.y * verticalRatio;
+
+        // pick a shape
+        switch (shapeToDraw) {
+
+          case 'circle':
+            ellipse(x, y, d, d);
+            break;
+
+          case 'square':
+            //rectMode(CENTER);
+            rect(x, y, d, d);
+            break;
+
+          case 'triangle':
+            ngon(3, x, y, d);
+            break;
+
+          case 'pentagon':
+            ngon(5, x, y, d);
+            break;
+
+          case 'star':
+            star(9, x, y, d / sqrt(3), d);
+            break;
+
+        }
       }
     }
   }
@@ -172,4 +227,30 @@ function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
   horizontalRatio = windowWidth / cameraWidth;
   verticalRatio = windowHeight / cameraHeight;
+}
+
+// draw a regular n-gon with n sides - stolen from https://github.com/bitcraftlab/p5.gui/blob/master/examples/quicksettings-1/sketch.js
+function ngon(n, x, y, d) {
+  beginShape();
+  for (var i = 0; i < n; i++) {
+    var angle = TWO_PI / n * i;
+    var px = x + sin(angle) * d / 2;
+    var py = y - cos(angle) * d / 2;
+    vertex(px, py);
+  }
+  endShape(CLOSE);
+}
+
+
+// draw a regular n-gon with n sides - stolen from https://github.com/bitcraftlab/p5.gui/blob/master/examples/quicksettings-1/sketch.js
+function star(n, x, y, d1, d2) {
+  beginShape();
+  for (var i = 0; i < 2 * n; i++) {
+    var d = (i % 2 === 1) ? d1 : d2;
+    var angle = PI / n * i;
+    var px = x + sin(angle) * d / 2;
+    var py = y - cos(angle) * d / 2;
+    vertex(px, py);
+  }
+  endShape(CLOSE);
 }
