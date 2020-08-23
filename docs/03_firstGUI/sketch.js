@@ -21,15 +21,19 @@ let horizontalRatio;
 let verticalRatio;
 
 // GUI controls: https://github.com/bitcraftlab/p5.gui
-let gui;
-let guiVisible;
-let lineWidth;
-let lineWidthMin;
-let lineWidthMax;
-let lineWidthStep;
-let backgroundColour;
-let lineColour;
-let showCamera;
+// p5.gui wants var variables NOT let variables...
+var gui;
+var guiVisible;
+var strokeWidth;
+var strokeWidthMin;
+var strokeWidthMax;
+var strokeWidthStep;
+var backgroundColour;
+var strokeColour;
+var showCamera;
+var fillColour;
+var drawStroke;
+var drawFill;
 
 function setup() {
   textAlign(CENTER, CENTER); //https://p5js.org/reference/#/p5/textAlign
@@ -68,17 +72,20 @@ function setup() {
 
   //GUI setup below
   guiVisible = true;
-  lineWidth = 8;
-  lineWidthMin = 0;
-  lineWidthMax = 42;
-  lineWidthStep = 1;
+  strokeWidth = 8;
+  strokeWidthMin = 0;
+  strokeWidthMax = 42;
+  strokeWidthStep = 1;
   backgroundColour = [0, 0, 100]; //https://rgb.to/white
-  lineColour = [0, 0, 0]; //black in hsl, https://rgb.to/black
-  showCamera = false;
+  strokeColour = [0, 0, 0]; //black in hsl, https://rgb.to/black
+  showCamera = true;
+  fillColour = [0, 100, 50]; //red in hsl, https://rgb.to/red
+  drawStroke = true;
+  drawFill = true;
 
   // Create Layout GUI
   gui = createGui('Press g to hide or show me');
-  gui.addGlobals('backgroundColour', 'lineColour', 'lineWidth', 'showCamera');
+  gui.addGlobals('backgroundColour', 'drawStroke', 'strokeColour', 'strokeWidth', 'drawFill', 'fillColour', 'showCamera');
 }
 
 function modelReady() {
@@ -91,9 +98,20 @@ function draw() {
   clear();
   background(backgroundColour);
 
-  strokeWeight(lineWidth);
-  stroke(lineColour);
-  noFill();
+  // set fill style
+  if (drawFill) {
+    fill(fillColour);
+  } else {
+    noFill();
+  }
+
+  // set stroke style
+  if (drawStroke) {
+    stroke(strokeColour);
+    strokeWeight(strokeWidth);
+  } else {
+    noStroke();
+  }
 
   if (showCamera) {
     image(capture, 0, 0, windowWidth, windowHeight);
