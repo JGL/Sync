@@ -55,6 +55,7 @@ var lengthOfHistory;
 var lengthOfHistoryMin;
 var lengthOfHistoryMax;
 var lengthOfHistoryStep;
+var drawRelative;
 
 function setup() {
   textAlign(CENTER, CENTER); //https://p5js.org/reference/#/p5/textAlign
@@ -90,10 +91,12 @@ function setup() {
 
   //GUI setup below
   guiVisible = true;
+
   strokeWidth = 8;
   strokeWidthMin = 0;
   strokeWidthMax = 42;
   strokeWidthStep = 1;
+
   backgroundColour = [255, 255, 255]; // white
   strokeColour = [0, 0, 0]; //black
   showCamera = true;
@@ -113,10 +116,12 @@ function setup() {
   shapeRadiusMin = 0;
   shapeRadiusMax = 42;
   shapeRadiusStep = 1;
+
   strokeOpacity = 255;
   strokeOpacityMin = 0;
   strokeOpacityMax = 255;
   strokeOpacityStep = 1;
+
   fillOpacity = 255;
   fillOpacityMin = 0;
   fillOpacityMax = 255;
@@ -130,9 +135,12 @@ function setup() {
   lengthOfHistoryMax = 30;
   lengthOfHistoryStep = 1;
 
+  drawRelative = false;
+
   // Create Layout GUI
   gui = createGui("Press g to hide or show me");
   gui.addGlobals(
+    "drawRelative",
     "drawHistory",
     "drawSkeleton",
     "drawEffects",
@@ -186,10 +194,13 @@ function draw() {
 
   // We call both functions to draw all keypoints and the skeleton, only draw skeleton if wanted and effects
   if (drawEffects) {
-    if (drawHistory) {
-      drawHistoryOfEffectsScaled();
-    } else {
-      drawEffectsScaled();
+    if (historyOfPoses.length > 0) {
+      //index safety
+      if (drawHistory) {
+        drawHistoryOfEffectsScaled();
+      } else {
+        drawEffectsScaled(historyOfPoses.length - 1); //sending the index to the history of poses array to reference
+      }
     }
   }
   if (drawSkeleton) {
@@ -203,17 +214,18 @@ function draw() {
 
 function drawHistoryOfEffectsScaled() {
   for (let i = 0; i < historyOfPoses.length; i++) {
-    poses = historyOfPoses[i];
-    drawEffectsScaled();
+    //poses = historyOfPoses[i]; no longer necessary as using index instead
+    //drawEffectsScaled(); now index included in function call below
+    drawEffectsScaled(i);
   }
 }
 
 // A function to draw effects over the detected keypoints
-function drawEffectsScaled() {
+function drawEffectsScaled(indexToCurrentPose) {
   // Loop through all the poses detected
-  for (let i = 0; i < poses.length; i++) {
+  for (let i = 0; i < historyOfPoses[indexToCurrentPose].length; i++) {
     // For each pose detected, loop through all the keypoints
-    let pose = poses[i].pose;
+    let pose = historyOfPoses[indexToCurrentPose][i].pose;
     for (let j = 0; j < pose.keypoints.length; j++) {
       // A keypoint is an object describing a body part (like rightArm or leftShoulder)
       let keypoint = pose.keypoints[j];
@@ -222,6 +234,26 @@ function drawEffectsScaled() {
         let d = shapeRadius;
         let x = keypoint.position.x * horizontalRatio;
         let y = keypoint.position.y * verticalRatio;
+
+        if (drawRelative && indexToCurrentPose > 0) {
+          //can't look back further in time than the first entry!
+          //then we must look at previous pose position
+          //this could be dangerous, what if there aren't the same number of keypoints in the previous pose?
+          //might not be detected and so unfilled....
+          // it is dangerous! more work needed....
+          let prevX =
+            historyOfPoses[indexToCurrentPose - 1][i].pose.keyPoints[j].position
+              .x;
+          let prevY =
+            historyOfPoses[indexToCurrentPose - 1][i].pose.keyPoints[j].position
+              .y;
+          let v1 = createVector(prevX, prevY);
+          let v2 = createVector(keypoint.position.x, keypoint.position.y);
+          //https://p5js.org/reference/#/p5.Vector/dist
+          let distance = v2.dist(v1);
+
+          d *= distance;
+        }
 
         // pick a shape
         switch (shapeToDraw) {
