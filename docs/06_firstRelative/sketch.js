@@ -11,15 +11,6 @@ This software is released under the MIT License.
 https://opensource.org/licenses/MIT
 */
 
-let capture;
-let poseNet;
-let poses = [];
-let canvas;
-let captureWidth;
-let captureHeight;
-let horizontalRatio;
-let verticalRatio;
-
 // GUI controls: https://github.com/bitcraftlab/p5.gui
 // p5.gui wants var variables NOT let variables...
 var gui;
@@ -56,6 +47,18 @@ var lengthOfHistoryMin;
 var lengthOfHistoryMax;
 var lengthOfHistoryStep;
 var drawRelative;
+
+//normal variables
+
+let capture;
+let poseNet;
+let poses = [];
+let canvas;
+let captureWidth;
+let captureHeight;
+let horizontalRatio;
+let verticalRatio;
+let minimumConfidenceNeededForPartToExist;
 
 function setup() {
   textAlign(CENTER, CENTER); //https://p5js.org/reference/#/p5/textAlign
@@ -157,6 +160,8 @@ function setup() {
     "shapeRadius",
     "lengthOfHistory"
   );
+
+  minimumConfidenceNeededForPartToExist = 0.2;
 }
 
 function modelReady() {
@@ -212,6 +217,44 @@ function draw() {
   }
 }
 
+function drawAnEffect(x, y, d) {
+  // pick a shape
+  switch (shapeToDraw) {
+    case "vertical line":
+      //https://p5js.org/reference/#/p5/line
+      //line(x1, y1, x2, y2)
+      line(x, 0, x, windowHeight);
+      break;
+
+    case "horizontal line":
+      //https://p5js.org/reference/#/p5/line
+      //line(x1, y1, x2, y2)
+      line(0, y, windowWidth, y);
+      break;
+
+    case "circle":
+      ellipse(x, y, d, d);
+      break;
+
+    case "square":
+      //rectMode(CENTER);
+      rect(x, y, d, d);
+      break;
+
+    case "triangle":
+      ngon(3, x, y, d);
+      break;
+
+    case "pentagon":
+      ngon(5, x, y, d);
+      break;
+
+    case "star":
+      star(9, x, y, d / sqrt(3), d);
+      break;
+  }
+}
+
 function drawHistoryOfEffectsScaled() {
   for (let i = 0; i < historyOfPoses.length; i++) {
     //poses = historyOfPoses[i]; no longer necessary as using index instead
@@ -225,71 +268,39 @@ function drawEffectsScaled(indexToCurrentPose) {
   // Loop through all the poses detected
   for (let i = 0; i < historyOfPoses[indexToCurrentPose].length; i++) {
     // For each pose detected, loop through all the keypoints
-    let pose = historyOfPoses[indexToCurrentPose][i].pose;
+    let pose = historyOfPoses[indexToCurrentPose][0].pose;
+    //TODO make this safe for multiple skeletons at once, we are currently assuming that skeletons never disappear or re-order, even worse, we are just using the first...
+
     for (let j = 0; j < pose.keypoints.length; j++) {
       // A keypoint is an object describing a body part (like rightArm or leftShoulder)
       let keypoint = pose.keypoints[j];
-      // Only draw an ellipse is the pose probability is bigger than 0.2
-      if (keypoint.score > 0.2) {
-        let d = shapeRadius;
+      // Only draw if the pose probability is bigger than minimumConfidenceNeededForPartToExist
+      if (keypoint.score > minimumConfidenceNeededForPartToExist) {
         let x = keypoint.position.x * horizontalRatio;
         let y = keypoint.position.y * verticalRatio;
+        let d = shapeRadius;
+        let partLabel = keypoint.part;
 
         if (drawRelative && indexToCurrentPose > 0) {
           //can't look back further in time than the first entry!
-          //then we must look at previous pose position
-          //this could be dangerous, what if there aren't the same number of keypoints in the previous pose?
-          //might not be detected and so unfilled....
-          // it is dangerous! more work needed....
-          let prevX =
-            historyOfPoses[indexToCurrentPose - 1][i].pose.keyPoints[j].position
-              .x;
-          let prevY =
-            historyOfPoses[indexToCurrentPose - 1][i].pose.keyPoints[j].position
-              .y;
-          let v1 = createVector(prevX, prevY);
-          let v2 = createVector(keypoint.position.x, keypoint.position.y);
-          //https://p5js.org/reference/#/p5.Vector/dist
-          let distance = v2.dist(v1);
+          let oldKeypoint =
+            historyOfPoses[indexToCurrentPose - 1][0].pose.keypoints[j]; // not bothering with matchine labels, and only looking at the first body...
 
-          d *= distance;
+          // Only compare if the pose probability is bigger than minimumConfidenceNeededForPartToExist
+          if (oldKeypoint.score > minimumConfidenceNeededForPartToExist) {
+            //then it's a good point and tracked in some sensible way, so use it
+            //using unscaled values (camera space positions) here, as we are just comparing to then scale the drawings if necessary
+            let prevX = oldKeypoint.position.x;
+            let prevY = oldKeypoint.position.y;
+            let v1 = createVector(prevX, prevY);
+            let v2 = createVector(keypoint.position.x, keypoint.position.y);
+            //https://p5js.org/reference/#/p5.Vector/dist
+            let distance = v2.dist(v1);
+            d *= distance;
+          }
         }
 
-        // pick a shape
-        switch (shapeToDraw) {
-          case "vertical line":
-            //https://p5js.org/reference/#/p5/line
-            //line(x1, y1, x2, y2)
-            line(x, 0, x, windowHeight);
-            break;
-
-          case "horizontal line":
-            //https://p5js.org/reference/#/p5/line
-            //line(x1, y1, x2, y2)
-            line(0, y, windowWidth, y);
-            break;
-
-          case "circle":
-            ellipse(x, y, d, d);
-            break;
-
-          case "square":
-            //rectMode(CENTER);
-            rect(x, y, d, d);
-            break;
-
-          case "triangle":
-            ngon(3, x, y, d);
-            break;
-
-          case "pentagon":
-            ngon(5, x, y, d);
-            break;
-
-          case "star":
-            star(9, x, y, d / sqrt(3), d);
-            break;
-        }
+        drawAnEffect(x, y, d);
       }
     }
   }
